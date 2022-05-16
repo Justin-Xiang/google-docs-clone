@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import DocModal from "./DocModal";
 import { addDoc, collection, onSnapshot } from "firebase/firestore";
+import { Navigate, useNavigate } from "react-router-dom";
 export default function Docs({ database }) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -9,6 +10,7 @@ export default function Docs({ database }) {
   const isMounted = useRef();
   const [docsData, setDocsData] = React.useState([]);
   const collectionRef = collection(database, "docsData");
+  const navigate = useNavigate();
   const getData = () => {
     onSnapshot(collectionRef, (data) => {
       setDocsData(
@@ -38,6 +40,10 @@ export default function Docs({ database }) {
         alert("Cannot add data");
       });
   };
+
+  const getID = (id) => {
+    navigate(`/editDocs/${id}`);
+  };
   return (
     <div className="docs-main">
       <h1>Docs Clone</h1>
@@ -54,7 +60,7 @@ export default function Docs({ database }) {
       <div className="grid-main">
         {docsData.map((doc) => {
           return (
-            <div className="grid-child">
+            <div className="grid-child" onClick={() => getID(doc.id)}>
               <p>{doc.title}</p>
             </div>
           );
